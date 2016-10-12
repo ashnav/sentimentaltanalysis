@@ -26,7 +26,9 @@ var/
 
 #specific files for our project
 **/*.pkl
+**/*.PKL
 **/glove.twitter.*.txt
+**/*.npy
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
