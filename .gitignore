@@ -24,6 +24,10 @@ var/
 .installed.cfg
 *.egg
 
+#specific files for our project
+**/*.pkl
+**/glove.twitter.*.txt
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
