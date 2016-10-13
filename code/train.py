@@ -3,7 +3,7 @@
 #########################################################################
 ####
 ####
-#### Authors: Stephanie Durand
+#### Authors: Stephanie Durand,Ashwini Narayana Murthy,Preethi Hansaa Manoharan,Xialou Cheng
 ####
 #### Adapted from code written by:
 #### Stavros Giorgis, Apostolos Rousas, John Pavlopoulos, 
