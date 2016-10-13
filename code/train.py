@@ -1,17 +1,24 @@
-#########################################################################
-############## Semeval - Sentiment Analysis in Twitter  #################
-#########################################################################
-####
-####
-#### Authors: Stephanie Durand
-####
-#### Adapted from code written by:
-#### Stavros Giorgis, Apostolos Rousas, John Pavlopoulos, 
-#### Prodromos Malakasiotis and Ion Androutsopoulos
-#### and 
-#### Pedro Paulo Balage Filho and Lucas Avanço
-####
-####
+# 
+# As our project was based mostly on combining techniques with existing code, there was not a lot of code, so 
+# Stephanie Durand wrote or adapted all of the code for the project phase I.
+#
+# This file combines the training steps from the "Weighted SVMs" and "Hybrid Classifier" approaches.
+# This is based off of the train.py code from the aueb folder and the run_semeval_classifier.py code
+# from the hybrid_classifier folder.
+# The original code from train.py forced a single file at a time as input and would use its own reader, 
+# forcing me to read the same file twice. My version is an adaptation of the original 
+# with extra input flexibility and major reafactorization to make the code easier to 
+# understand and reduce code duplication. 
+#
+# Adapted from code written by:
+# Stavros Giorgis, Apostolos Rousas, John Pavlopoulos, 
+# Prodromos Malakasiotis and Ion Androutsopoulos
+# and 
+# Pedro Paulo Balage Filho and Lucas Avanco
+#
+# Adapted by: Stephanie Durand
+#
+
 import sys
 import os
 from os.path import join
@@ -30,13 +37,10 @@ from TwitterHybridClassifier import TwitterHybridClassifier
 import math
 
 """
-Combines the training steps from the "Weighted SVMs" and "Hybrid Classifier" approaches.
-This is based off of the train.py code from the aueb folder and the run_semeval_classifier.py code
-from the hybrid_classifier folder.
-The original code from train.py forced a single file at a time as input and would use its own reader, 
-forcing me to read the same file twice. My version is a re-factorization of the original, 
-with extra input flexibility, and some code refactorization. 
+This function will train all of the machine learning classifiers and save them off so 
+that they can be used for testing.
 
+inputs:
 tweets - a list of dictionaries containing tweet information.
       Each dictionary should be of the form:
       {
@@ -44,8 +48,10 @@ tweets - a list of dictionaries containing tweet information.
          'SENTIMENT': <sentiment>,
          'MESSAGE': <tweet message>
       }
+d - the number of dimensions for the word embeddings vectors
+      
 """
-def train(tweets):
+def train(tweets, d):
     print "System training started"
     
     #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
@@ -54,14 +60,15 @@ def train(tweets):
     
     #train the new ML classifier for the pipeline
     train_classifier3(tweets)
-    print "trained new hybrid classifier"
+    print "Trained new hybrid classifier"
     
+    #switch back to current directory
     os.chdir(curDir)
     
     print "Training the SVMs"
     #make lists from the dictionary values for use in the Weighted SVM code
-    raw_labels_train = [d['SENTIMENT'] for d in tweets]
-    messages_train = [d['MESSAGE'] for d in tweets]
+    raw_labels_train = [tweet['SENTIMENT'] for tweet in tweets]
+    messages_train = [tweet['MESSAGE'] for tweet in tweets]
 	
     #labels for subjectivity detection (2 categories)
     temp_labels_train = [0 if x == "neutral" else 1 for x in raw_labels_train]
@@ -83,15 +90,15 @@ def train(tweets):
     print "built the manual feature vector"
 	
     #build the feature vector for the word embeddings technique (SD2)
-    embeddings_train = build_embeddings_vector(tokens_train, 100)
+    embeddings_train = build_embeddings_vector(tokens_train, d)
     print "built the word embeddings feature vector"
    
 	
-    #Penalty parameter C of the error term for every SP system
+    #Penalty parameter C of the error term of the SP systems
     C1 = 0.003410871889693192
     C2 = 7.396183688299606
    
-    #Subjectivity Detection features
+    #Subjectivity Detection
     #train sd1
     sd1 = train_sd1(features_train, temp_labels_train, C1)
     print "trained sd1"
@@ -100,7 +107,7 @@ def train(tweets):
     sd2 = train_sd2(embeddings_train, temp_labels_train, C2)
     print "trained sd2"
    
-    #Sentiment Polarity Features
+    #Sentiment Polarity 
     #train SP classifiers
     sp1 = train_sp1(features_train, temp_labels_train, labels_train, C1)
     print "trained sp1"
@@ -220,6 +227,7 @@ def build_embeddings_vector(tokens_train, d=100):
     saveGlove(glove)
     
     #word embeddings features
+    print "Building glove feature vectors"
     embeddings_train = []
     #for each message in tokens_train :
     for i in range(0, len(tokens_train)):
@@ -381,12 +389,13 @@ Parses the input file names (as arguments), reads all of them, and trains using 
 """
 if __name__ == "__main__":
     #checks for invalid input arguments
-    if(len(sys.argv) < 2):
-        print "Usage : python train.py train_dataset_path..."
+    if(len(sys.argv) < 3):
+        print "Usage : python train.py <# of dimensions for word embeddings vectors> <train_dataset_path>..."
         sys.exit(0)  
     else:
         tweets = []
-        for x in range(1, len(sys.argv)):
+        d = int(sys.argv[1])
+        for x in range(2, len(sys.argv)):
             #check if dataset exists
             if os.path.exists(sys.argv[x]):
                 #read all of the tweets from the file and add them to the list 
@@ -397,6 +406,6 @@ if __name__ == "__main__":
                 print sys.argv[x] + " could not be found!"
                 sys.exit(0)
         print "Training files loaded"
-        train(tweets)
+        train(tweets, d)
 		
       

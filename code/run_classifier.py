@@ -1,17 +1,22 @@
-#########################################################################
-############## Semeval - Sentiment Analysis in Twitter  #################
-#########################################################################
-####
-####
-#### Authors: Stephanie Durand
-####
-#### Adapted from code written by:
-#### Stavros Giorgis, Apostolos Rousas, John Pavlopoulos, 
-#### Prodromos Malakasiotis and Ion Androutsopoulos
-#### and 
-#### Pedro Paulo Balage Filho and Lucas Avanço
-####
-####
+# 
+# As our project was based mostly on combining techniques with existing code, there was not a lot of code, so 
+# Stephanie Durand wrote or adapted all of the code for the project phase I.
+#
+# The main mechanism for running our combined classifier.
+#
+# This code is based off of the files detect_senitment.py from the aueb project folder
+# and the TwitterHybridClassifier.py from the hybrid_classifier project folder. Both of the 
+# files have been re-factored and the inputs and outputs have been changed to be able to
+# combine the systems together. 
+#
+# Adapted from code written by:
+# Stavros Giorgis, Apostolos Rousas, John Pavlopoulos, 
+# Prodromos Malakasiotis and Ion Androutsopoulos
+# and 
+# Pedro Paulo Balage Filho and Lucas Avanco
+#
+# Adapted by: Stephanie Durand
+#
 import sys
 import os
 from os.path import join
@@ -29,20 +34,19 @@ from twitter_data_reader import read_file
 from PreProcess import pre_process
 
 """
-The main mechanism for running our combined classifier.
-
-This code is based off of the files detect_senitment.py from the aueb project folder
-and the TwitterHybridClassifier.py from the hybrid_classifier project folder. Both of the 
-files have been re-factored and the inputs and outputs have been changed to be able to
-combine the systems together. 
+This function will run all of the classifiers and combine their confidence scores
+to predict the sentiment of the provided tweets.  
 
 inputs:
 tweets - a list of dictionaries that must at least contain the entries:
+        {
          'ID': <id>,
          'MESSAGE': <tweet message>
+        }
+        (The dictionaries can have other entries that will be ignored.)
 
 return:
-a tuple containing 
+a tuple containing the following data at the noted index
  0 - a list of dictionaries of the form
       {
          'ID': <id>,
@@ -55,15 +59,15 @@ a tuple containing
  3 - the confidence scores from the hybrid classifier pipeline
 
 """
-def run_classifier(tweets):
-    messages_test = [d['MESSAGE'] for d in tweets]
+def run_classifier(tweets, d):
+    messages_test = [tweet['MESSAGE'] for tweet in tweets]
     curDir = os.getcwd()
     
     #switch directory because all of the file paths are hardcoded in the hybrid_classifier project :(
     os.chdir(join(fileDir, "hybrid_classifier"))
     #run hybrid pipeline classifier
     print "Running hybrid classifier"
-    tweet_texts = [d['MESSAGE'].strip() for d in tweets]
+    tweet_texts = [tweet['MESSAGE'].strip() for tweet in tweets]
     confidence_pipe = run_hybrid_classifier(tweet_texts)
 
     #tokenize all messages
@@ -336,15 +340,17 @@ of all of the combined tweets.
 """
 if __name__ == "__main__":
     #check for incorrect number of arguments
-    if(len(sys.argv) < 3):
-        print "Usage : python run_classifier.py output_file test_data_file..."
+    if(len(sys.argv) < 4):
+        print "Usage : python run_classifier.py <# of dimensions for word embeddings> <output_file> <test_data_file>..."
         sys.exit(0)  
     else:
         tweets = []
+        #set the number of dimensions for the word embeddings vectors
+        d = int(sys.argv[1])
         #set the output file to the first argument
-        output_file = sys.argv[1]
+        output_file = sys.argv[2]
         #read all of the remaining arguments as input testing files
-        for x in range(2, len(sys.argv)):
+        for x in range(3, len(sys.argv)):
             #check if dataset exists
             if os.path.exists(sys.argv[x]):
                 #read all of the tweets from the file and add them to the list 
@@ -355,7 +361,8 @@ if __name__ == "__main__":
                 print sys.argv[x] + " could not be found!"
                 sys.exit(0)
         print "Test files loaded"
-        all_results = run_classifier(tweets)
+        print "Beginning classification"
+        all_results = run_classifier(tweets,d)
         results = all_results[0]
         print "Writing output file"
         with open(output_file, 'w') as result_file:
