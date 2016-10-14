@@ -1,0 +1,22 @@
+author: Stephanie Durand
+
+This project is dependent on the following languages:
+   Python2.7
+   Java 7 (or higher)
+
+and requires the installation of the following libraries for python2.7:
+   numpy
+   scipy
+   scikit-learn
+   nltk
+   wordnet
+   sentiwordnet
+
+In order to download these libraries, use the following commands:
+
+sudo apt-get install python-pip python-setuptools python-numpy python-scipy python-sklearn python-nltk
+sudo pip install -U setuptools numpy scipy sklearn nltk
+
+python -c "import nltk; nltk.download('sentiwordnet')"
+python -c "import nltk; nltk.download('wordnet')"
+

@@ -1,0 +1,38 @@
+This is the 3rd party code that implements the Weighted Ensemble of SVMs method. We have not modified this code, but instead have created our own files for training and running our new combined classifier (outside of this folder)that are heavily influenced by the code in train.py and detect_sentiment.py. We implemented our own so that we could still run the original ensemble as a baseline comparison to our new system. We did write the semeval_driver.py file as a script to run the original system with our specific training and test data. 
+
+This code was obtained from:
+https://github.com/nlpaueb/aueb.twitter.sentiment
+
+The paper associated with this code can be found at:
+https://aclweb.org/anthology/S/S16/S16-1012.pdf
+
+This method expected a slang dictionary to be used for the creation of the feature vectors, but did not provide one, so we created the file:
+aueb/lexicons/SlangDictionary/slangDict.txt 
+from parsing the HTML files of the website http://www.noslang.dictionary
+(This is the same site suggested by the original authors.)
+
+There were numerous data dependencies within this code as well that we had to download and insert into the correct location. 
+
+Here is a table of those files and their origin:
+   FILE NAME                                           ORIGIN
+--------------------------------------------------------------------------------------------------------------
+clusters/TwitterWordClusters/50mpaths.txt          http://www.cs.cmu.edu/~ark/TweetNLP/
+embeddings/Glove/                                  http://nlp.stanford.edu/projects/glove/
+lexicons/afinn/                                    https://github.com/fnielsen/afinn/tree/master/afinn
+lexicons/Minqing Hu/                               http://www.cs.uic.edu/~liub/FBS/opinion-lexicon-English.rar
+lexicons/MPQA/subjclueslen1-HLTEMNLP05.tff         http://mpqa.cs.pitt.edu/lexicons/subj_lexicon/
+lexicons/NRC/NRC-Emotion-Lexicon-v0.92/            http://saifmohammad.com/WebPages/lexicons.html
+lexicons/NRC/MaxDiff-Twitter-Lexicon/              http://saifmohammad.com/WebPages/lexicons.html
+lexicons/NRC/NRC-Hashtag-Sentiment-Lexicon-v0.1/   http://saifmohammad.com/WebPages/lexicons.html
+lexicons/NRC/HashtagSentimentAffLexNegLex/         http://saifmohammad.com/WebPages/lexicons.html
+lexicons/NRC/Sentiment140-Lexicon-v0.1/            http://saifmohammad.com/WebPages/lexicons.html
+lexicons/NRC/Sentiment140AffLexNegLex/             http://saifmohammad.com/WebPages/lexicons.html
+lexicons/SO-CAL/                                   https://github.com/DrOttensooser/BiblicalNLPworks/tree/master/SkyDrive/NLP/CommonWorks/Data/Opion-Lexicon-English/SO-CAL
+
+This code also has 2 other third party dependencies of its own:
+ark-tweet-nlp  (A POS tagger for tweets) 
+   can be found at https://code.google.com/archive/p/ark-tweet-nlp/downloads
+ark-twokenize-py (A python port of the tokenization portion of the ark-tweet-nlp package)
+   can be found at https://github.com/myleott/ark-twokenize-py
+
+author:Stephanie Durand and Xiaolu Cheng

@@ -1,4 +1,6 @@
 #!/bin/bash
+#Please see the run_classifier.py or train.py files for overall code authorship
+#author: Stephanie Durand
 
 #specify the number of dimensions to use for the GloVe word embeddings vectors
 d=100

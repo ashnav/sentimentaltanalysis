@@ -1,0 +1,15 @@
+Our method for performing sentiment analysis is based on the combination of two existing systems. We use the individual performance of each of those systems as a baseline to compare against. For more information on each of these systems, please read the README file. 
+
+Evaluation metric(s)
+We want to know the performance of the system. Classification accuracy is computed as the number of correct predictions over the number of instances which is not sufficient. So, a F-measure is used to reduce the system bias. We use F1 score to evaluate the system performance. In the equation, precision is the number of correct positive (negative/neutral) instances divided by the number of all positive (negative/neutral) instances. Recall is the number of correct positive(negative/neutral) instances divided by the number of positive (negative/neutral) instances that should have been returned. This measure considers both the correct precision and the recall. 
+
+Result
+           Positive F1   |   Negative F1   |   Neutral F1   |   Overall F1
+WE SVMs      71.55       |      39.00      |     48.25      |     55.27
+NILC         72.34       |      43.06      |     38.95      |     57.70
+Our system   74.14       |      41.52      |     37.57      |     57.83
+
+Our system combines both the systems together. We add NILC_USCP into the Weighted Ensemble of SVMs as a third method. In the chart, we compare the three system by precision, recall and F1 score. In the table, we have the F1 score of three systems.  Our max F1 is 57.8% with the weights 0.1, 0.75, and 0.15. We can observe a  slight overall improvement. However, our system has the worst performance over neutral instances. We concentrate on this problem and will try to fix this problem for the Project Phase 2.
+
+Author: Xiaolu Cheng
+

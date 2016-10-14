@@ -14,4 +14,5 @@ results = detect_sentiment(message_tests)
 with open("../../data/aueb_original_results", "w") as results_out:
    for tweet_id, polarity in results:
       results_out.write(tweet_id +"\t" + polarity + "\n")
-   
+
+#author: Stephanie Durand   

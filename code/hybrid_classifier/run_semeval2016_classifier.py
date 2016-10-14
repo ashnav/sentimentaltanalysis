@@ -21,7 +21,6 @@
 from Semeval2016Twitter import SemevalTwitter
 from TwitterHybridClassifier import TwitterHybridClassifier
 from nltk import ConfusionMatrix
-from pprint import pprint
 import codecs
 
 # Print the confusion matrix for classification
@@ -37,12 +36,14 @@ def confusion_matrix(gold,guess):
 	# Confusion Matrix
 	cm = ConfusionMatrix(gold, guess)
 	print (cm.pretty_format())
-
+#
+#   THIS IS THE PART THAT I MODIFIED
+#
 train_path = '../../data/train60'
 dev_path   = 'none'
 test_path  = '../../data/test40'
 
-# TestSet from 2013
+# TestSet from 2013 - commented this out
 #test_path  = 'Data/Semeval/TestSet/2013/twitter-test-GOLD-B.tsv'
 
 print('Reading Datasets and Pre-processing...')

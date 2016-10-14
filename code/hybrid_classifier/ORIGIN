@@ -1,0 +1,9 @@
+This folder contains the third party code for the implementation of the hybrid classifier pipeline technique. We have not modified this code, but instead have created our own files for training and running our new combined classifier (outside of this folder)that are heavily influenced by the code in TwitterHybridClassifier.py. We implemented our own so that we could still run the original pipeline as a baseline comparison to our new system. We did create the Semeval2016Twitter.py and run_semeval2016_classifier.py files as modified versions of the run_semeval_classifier.py and SemevalTwitter.py files to to run the original system with the new format of the SemEval 2016 data. There were fairly minimal modifications made. 
+
+This code was obtained from:
+https://github.com/pedrobalage/TwitterHybridClassifier
+
+The paper associated with this code can be found at:
+http://www.pedrobalage.com/pubs/BalageFilho2014NILCUSPImprovedHybrid.pdf
+
+author: Stephanie Durand and Xiaolu Cheng
