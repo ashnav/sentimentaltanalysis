@@ -1,6 +1,3 @@
-# 
-# As our project was based mostly on combining techniques with existing code, there was not a lot of code, so 
-# Stephanie Durand wrote or adapted all of the code for the project phase I.
 #
 # This file combines the training steps from the "Weighted SVMs" and "Hybrid Classifier" approaches.
 # This is based off of the train.py code from the aueb folder and the run_semeval_classifier.py code
@@ -18,7 +15,6 @@
 #
 # Adapted by: Stephanie Durand
 #
-
 import sys
 import os
 from os.path import join
