@@ -2,7 +2,7 @@
 # As our project was based mostly on combining techniques with existing code, there was not a lot of code, so 
 # Stephanie Durand wrote or adapted all of the code for the project phase I.
 #
-# The main mechanism for running our combined classifier.
+# This file is the main mechanism for running our combined classifier.
 #
 # This code is based off of the files detect_senitment.py from the aueb project folder
 # and the TwitterHybridClassifier.py from the hybrid_classifier project folder. Both of the 

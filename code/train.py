@@ -6,7 +6,7 @@
 # This is based off of the train.py code from the aueb folder and the run_semeval_classifier.py code
 # from the hybrid_classifier folder.
 # The original code from train.py forced a single file at a time as input and would use its own reader, 
-# forcing me to read the same file twice. My version is an adaptation of the original 
+# forcing us to read the same file multiple times. Our version is an adaptation of the original 
 # with extra input flexibility and major reafactorization to make the code easier to 
 # understand and reduce code duplication. 
 #
