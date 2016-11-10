@@ -389,11 +389,13 @@ if __name__ == "__main__":
         print "Usage : python train.py <# of dimensions for word embeddings vectors> <train_dataset_path>..."
         sys.exit(0)  
     else:
+        print str(sys.argv)
         tweets = []
         d = int(sys.argv[1])
         for x in range(2, len(sys.argv)):
             #check if dataset exists
             if os.path.exists(sys.argv[x]):
+                print "Loading file: " + sys.argv[x]
                 #read all of the tweets from the file and add them to the list 
                 #of dictionaries representing the tweets
                 tweets += read_file(sys.argv[x])
@@ -402,6 +404,7 @@ if __name__ == "__main__":
                 print sys.argv[x] + " could not be found!"
                 sys.exit(0)
         print "Training files loaded"
+        print "Number of tweets loaded: " + str(len(tweets))
         train(tweets, d)
 		
       

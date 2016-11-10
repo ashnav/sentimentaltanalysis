@@ -150,13 +150,17 @@ if __name__=="__main__":
     import sys
     sys.path.append("../")
     if(len(sys.argv) < 5):
-        print "Usage : python tuning_script.py <file with correct tweet labels> <sp1 confidence scores file> <sp2 confidence scores file> <pipeline confidence scores file>""
+        print "Usage : python tuning_script.py <file with correct tweet labels> <sp1 confidence scores file> <sp2 confidence scores file> <pipeline confidence scores file>"
     print "Reading the truth file"
+    truth_file = sys.argv[1]
     from twitter_data_reader import read_file
-    tweets = read_file(file_input_messages)
+    tweets = read_file(truth_file)
     true_labels = [d['SENTIMENT'] for d in tweets]
     
     print "Reading the confidence score files"
+    file_sp1 = sys.argv[2]
+    file_sp2 = sys.argv[3]
+    file_pipe = sys.argv[4]
     confidence_sp1 = read_confidence_scores(file_sp1)
     confidence_sp2 = read_confidence_scores(file_sp2)
     confidence_pipe = read_confidence_scores(file_pipe)

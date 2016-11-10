@@ -112,9 +112,9 @@ def run_classifier(tweets, d):
     os.chdir(curDir)
     
     #combine confidence scores with weights W1, W2, W3
-    W1 = 0.10
-    W2 = 0.75
-    W3 = 0.15
+    W1 = 0.34
+    W2 = 0.58
+    W3 = 0.08
     
     confidence = confidence_sp1*W1 + confidence_sp2*W2 + confidence_pipe*W3
 
@@ -364,6 +364,14 @@ if __name__ == "__main__":
         print "Beginning classification"
         all_results = run_classifier(tweets,d)
         results = all_results[0]
+        print "Writing confidence score files"
+        conf_sp1 = "code/tuning/conf_sp1_new"
+        print_confidence_scores(conf_sp1, all_results[1])
+        conf_sp2 = "code/tuning/conf_sp2_new"
+        print_confidence_scores(conf_sp2, all_results[2])
+        conf_pipe = "code/tuning/conf_pipe_new"
+        print_confidence_scores(conf_pipe, all_results[3])
+        
         print "Writing output file"
         with open(output_file, 'w') as result_file:
             for x in range(0, len(results)):

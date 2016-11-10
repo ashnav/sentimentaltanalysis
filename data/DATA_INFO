@@ -1,0 +1,5 @@
+2013 training data   train/downloaded.tsv          raw-9684    available-7430
+2013 dev data        dev/downloaded.tsv            raw-1654    available-1258
+2016 training data   2016/downloaded_train.tsv     raw-6000    available-5043
+2016 dev data        2016/downloaded_dev.tsv       raw-2000    available-1695
+2016 devtest data    2016/downloaded_devtest.tsv   raw-2000    available-1692
