@@ -12,6 +12,8 @@ dev_file_2016=data/2016/clean_dev.tsv
 test_file=data/2016/clean_devtest.tsv
 out_file=predictions.out
 
+all_tweets=data/semeval_data.tsv
+
 #run the python
-python code/weka/weka_data_builder.py $train_file_2013 $dev_file_2013 $train_file_2016 $dev_file_2016 $test_file
+python code/weka/weka_data_builder.py $all_tweets
 
