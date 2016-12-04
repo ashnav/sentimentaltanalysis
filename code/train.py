@@ -50,16 +50,16 @@ d - the number of dimensions for the word embeddings vectors
 def train(tweets, d):
     print "System training started"
     
-    #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
+#    #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
     curDir = os.getcwd()
-    os.chdir(join(fileDir, "hybrid_classifier"))
-    
-    #train the new ML classifier for the pipeline
-    train_classifier3(tweets)
-    print "Trained new hybrid classifier"
-    
-    #switch back to current directory
-    os.chdir(curDir)
+#    os.chdir(join(fileDir, "hybrid_classifier"))
+#    
+#    #train the new ML classifier for the pipeline
+#    train_classifier3(tweets)
+#    print "Trained new hybrid classifier"
+#    
+#    #switch back to current directory
+#    os.chdir(curDir)
     
     print "Training the SVMs"
     #make lists from the dictionary values for use in the Weighted SVM code

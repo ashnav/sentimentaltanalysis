@@ -1,0 +1,4 @@
+	positive: P=68.34, R=61.92, F1=64.97
+	negative: P=21.15, R=40.74, F1=27.85
+	 neutral: P=41.98, R=41.62, F1=41.80
+	OVERALL SCORE : 46.41
