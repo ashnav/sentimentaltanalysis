@@ -12,11 +12,9 @@ class Glove() :
     directory = "embeddings/Glove/"
     
     #constructor
-    def __init__(self,d=25, words=None, emb=None):	
+    def __init__(self,d=25):	
         #word list
-        self.words = []
-        #embeddings list
-        self.embeddings = []
+        self.embeddings = {}
 
 	#select embeddings size
         if d == 25:
@@ -35,12 +33,8 @@ class Glove() :
             print "Invalid embeddings size"
         
         #load embeddings
-        if words is None and emb is None:
-            self.loadEmbeddings()
-        else:
-            self.words = words
-            self.embeddings = emb
-            self.size = self.embeddings.shape[1]
+        self.loadEmbeddings()
+        
 		
 
     #load Slang Dictionary
@@ -52,21 +46,15 @@ class Glove() :
                 line = line.decode('utf8')
                 #remove \n characters
                 line = line.rstrip()
-                word = line.split(" ")[0]
-                emb = [float(x) for x in line.split(" ")[1:]]                
+                line_split = line.split(' ')
+                word = line_split[0]
+                emb = [float(x) for x in line_split[1:]]                
                 #add new data
-                self.words.append(word)
-                self.embeddings.append(emb)
-		
-	    self.embeddings = np.array(self.embeddings)
+                self.embeddings[word] = np.array(emb)
 
 	#find the embeddings for a given word
     def findWordEmbeddings(self,word):
-        try:
-                i = self.words.index(word)
-                return self.embeddings[i]
-        except:
-                return None
+        return self.embeddings.get(word, None)
 
 	#find the centroid embedding for a given message
     def findCentroid(self,tokens):

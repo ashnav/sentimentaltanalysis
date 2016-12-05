@@ -1,0 +1,22 @@
+Results from running weka in python using StringToWordVector filter with no stop words and SMO classifier
+
+Building Word Vectors
+Building SMO CLassifier
+Running cross-fold validation
+
+Correctly Classified Instances       10570               61.7479 %
+Incorrectly Classified Instances      6548               38.2521 %
+Kappa statistic                          0.3691
+Mean absolute error                      0.331 
+Root mean squared error                  0.4258
+Relative absolute error                 80.3236 %
+Root relative squared error             93.8129 %
+Total Number of Instances            17118     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.666    0.239    0.678      0.666    0.672      0.428    0.742     0.623     positive
+                 0.666    0.329    0.591      0.666    0.626      0.332    0.670     0.536     neutral
+                 0.352    0.064    0.499      0.352    0.413      0.334    0.735     0.335     negative
+Weighted Avg.    0.617    0.250    0.614      0.617    0.613      0.374    0.711     0.543 

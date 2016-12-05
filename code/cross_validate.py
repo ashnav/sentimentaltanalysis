@@ -7,12 +7,11 @@ author:Stephanie Durand
 """
 import sys
 import os
-import tempfile
 from os.path import join
 from twitter_data_reader import read_file
 from train import train
 from train import train_classifier3
-from aueb.train import main as aueb_train
+from train_aueb import train as aueb_train
 from aueb.detect_sentiment import main as detect_sentiment
 import argparse
 from run_classifier import run_classifier
@@ -56,7 +55,7 @@ def run_combined_classifier(training, test, foldNum, d):
         all_results = run_classifier(test, d)
         print "Classification complete"
         results = all_results[0]
-        filename = "cross_validate_combined_" + str(foldNum) + ".out"
+        filename = "combined_results_fold" + str(foldNum) + ".out"
         with open(filename, "w") as outfile:
             for result in results:
                 outfile.write(result[0] + '\t' + result[1] + '\n')
@@ -66,9 +65,11 @@ def run_combined_classifier(training, test, foldNum, d):
 Trains and tests using the original weightedSVM classifier
 """
 def run_weightedSVM_classifier(training, test, foldNum, d):
-
-    train(training, d)
+    curDir = os.getcwd()
+    aueb_train(training, d)
     print "Training complete"
+    
+    os.chdir(fileDir +"aueb")
     
     #create test data
     message_tests = {}

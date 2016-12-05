@@ -358,23 +358,23 @@ def saveGlove(glove):
 	
 #load Glove embeddings
 def loadGlove(d=200):
-    start = time.time()
-
-    f1 = 'resources/words.pkl'
-    f2 = 'resources/embeddings.npy'
-
-    if (os.path.isfile(f1) and os.path.isfile(f2)):
-        with open(f1, 'rb') as input:
-            w = pickle.load(input)
-            
-        e = np.load(f2)
-        glove = GloveDictionary.Glove(words=w, emb=e)
-    else:
-	glove = GloveDictionary.Glove(d)
-	saveGlove(glove)
-
-    end=time.time()
-    return glove
+#    start = time.time()
+#
+#    f1 = 'resources/words.pkl'
+#    f2 = 'resources/embeddings.npy'
+#
+#    if (os.path.isfile(f1) and os.path.isfile(f2)):
+#        with open(f1, 'rb') as input:
+#            w = pickle.load(input)
+#            
+#        e = np.load(f2)
+#        glove = GloveDictionary.Glove(words=w, emb=e)
+#    else:
+#	glove = GloveDictionary.Glove(d)
+#	saveGlove(glove)
+#
+#    end=time.time()
+    return GloveDictionary.Glove(d)
 
 #save trained moleds
 def saveModels(sd1,sd2,sp1,sp2):
