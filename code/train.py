@@ -24,7 +24,7 @@ sys.path.append(join(fileDir, "hybrid_classifier"))
 from twitter_data_reader import read_file
 from postaggers import arktagger
 from utilities import *
-from features import features
+from feature_utils import *
 from classifiers import SVM
 import numpy as np
 import regularization
@@ -50,16 +50,16 @@ d - the number of dimensions for the word embeddings vectors
 def train(tweets, d):
     print "System training started"
     
-#    #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
+    #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
     curDir = os.getcwd()
 #    os.chdir(join(fileDir, "hybrid_classifier"))
 #    
 #    #train the new ML classifier for the pipeline
 #    train_classifier3(tweets)
 #    print "Trained new hybrid classifier"
-#    
-#    #switch back to current directory
-#    os.chdir(curDir)
+    
+    #switch back to current directory
+    os.chdir(curDir)
     
     print "Training the SVMs"
     #make lists from the dictionary values for use in the Weighted SVM code
@@ -132,9 +132,14 @@ a list of the feature vectors for all of the input training tweets
 """
 def build_feature_vector(messages_train, tokens_train, labels_train):
 
+    #load features list
+    features_list = load_feature_list(join(fileDir, "resources/featureslist.txt"))
+    
+    clusters = []
     #load word clusters
-    clusters = loadClusters()
-	
+    if 'word_clusters' in features_list:
+        clusters = loadClusters()
+    
     #load Lexicons
     negationList, slangDictionary, lexicons, mpqa_lexicons = loadLexicons()
 
@@ -173,12 +178,14 @@ def build_feature_vector(messages_train, tokens_train, labels_train):
     #save lexicons
     saveLexicons(negationList, slangDictionary, lexicons, mpqa_lexicons)
     #save clusters
-    saveClusters(clusters)
+    if 'word_clusters' in features_list:
+        saveClusters(clusters)
     
     #build the manual feature vector
-    features_train = features.getFeatures(
+    features_train = getFeatures(
                                           messages_train,
                                           tokens_train,
+                                          features_list,
                                           pos_tags_train,
                                           slangDictionary,
                                           lexicons,
@@ -220,7 +227,7 @@ def build_embeddings_vector(tokens_train, d=100):
     glove = GloveDictionary.Glove(d)
 
     #save Glove embeddings for future use
-    saveGlove(glove)
+    #saveGlove(glove)
     
     #word embeddings features
     print "Building glove feature vectors"

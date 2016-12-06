@@ -1,9 +1,6 @@
 from weka.core.dataset import *
 from weka.classifiers import Classifier
-from weka.classifiers import Evaluation
-from weka.classifiers import PredictionOutput
 from weka.filters import StringToWordVector
-from weka.core.classes import Random
 from weka.core.stemmers import Stemmer
 from weka.core.stopwords import Stopwords
 from weka.core.tokenizers import Tokenizer
@@ -27,10 +24,17 @@ class StringWordVectorClassifier:
       }
     
     """
-    def __init__(self, data):
+    def __init__(self, training):
         #build data in the format weka expects
-        dataset = StringWordVectorClassifier.convertDictToInstances(data)
+        dataset = StringWordVectorClassifier.convertDictToInstances(training)
+        print dataset.num_instances
+        msg_attr = dataset.attribute(0)
+        print msg_attr.value(int(dataset.get_instance(0).get_value(0))) == training[0]['MESSAGE'].strip()
+        print msg_attr.value(int(dataset.get_instance(35).get_value(0))) == training[35]['MESSAGE'].strip()
+        print msg_attr.value(int(dataset.get_instance(523).get_value(0))) == training[523]['MESSAGE'].strip()
+        print msg_attr.value(int(dataset.get_instance(1634).get_value(0))) == training[1634]['MESSAGE'].strip()
         
+        #build filter
         stemmer = Stemmer(classname='weka.core.stemmers.NullStemmer')
         fileDir = os.path.dirname(__file__)
         stopwordsfile = os.path.join(fileDir, 'resources/Stopwordslist.txt')
@@ -43,19 +47,21 @@ class StringWordVectorClassifier:
         self.str2wv.inputformat(dataset)
         print "Building Word Vectors"
         filtered = self.str2wv.filter(dataset)
+        
+        #build classifier
         print "Building SMO CLassifier"
         self.cls = Classifier(classname="weka.classifiers.functions.SMO")
         self.cls.build_classifier(filtered)
-        print "Running cross-fold validations"
-        evaluation = Evaluation(filtered)
-        pred_output= PredictionOutput(classname='weka.classifiers.evaluation.output.prediction.PlainText')
-        evaluation.crossvalidate_model(self.cls, filtered, 10, Random(42), output=pred_output)
         
-        print evaluation.summary()
-        print evaluation.class_details()
-        print "correct:" + str(evaluation.percent_correct)
-        print "incorrect: " + str(evaluation.percent_incorrect)
-        print "unclassified: " + str(evaluation.unclassified)
+    def classify(self, testing):
+        print 'Performing classification'
+        test_set = StringWordVectorClassifier.convertDictToInstances(testing)
+        filtered_test = self.str2wv.filter(test_set)
+        predictions = []
+        for inst in filtered_test:
+            predNum = self.cls.classify_instance(inst)
+            predictions.append(filtered_test.class_attribute.value(int(predNum)))
+        return predictions
         
     @staticmethod    
     def convertDictToInstances(tweets):
@@ -72,6 +78,8 @@ class StringWordVectorClassifier:
         loader=Loader(classname='weka.core.converters.ArffLoader')
         data=loader.load_file(temp_file)
         data.class_is_last()
+        os.remove(temp_file)
+        print data.num_instances
         return data
         
         
@@ -99,8 +107,30 @@ if __name__ == "__main__":
     sys.path.append("../")
     from twitter_data_reader import read_file
     tweets = read_file("../../data/semeval_data.tsv")
+    print len(tweets)
+    from cross_validate import fold_data
+    folds = fold_data(tweets, 10)
+    print len(folds)
+    print len(folds[0])
+    num_itr = 2
+    #num_itr = len(folds)
     try:
         jvm.start()
-        classifier = StringWordVectorClassifier(tweets)
+        for foldNum in range(1,2):
+            print "Starting fold {}".format(foldNum)
+            training = []
+            test = []
+            for index in range(0, len(folds)):
+                if index == foldNum:
+                    test = folds[index]
+                else:
+                    training.extend(folds[index])
+                    
+            classifier = StringWordVectorClassifier(training)
+            predictions = classifier.classify(test)
+            with open('wv_fold' + str(foldNum), 'w') as outfile:
+                for i in range(0,len(test)):
+                    outfile.write('{}\t{}\n'.format(tweets[i]['ID'], predictions[i]))
+        
     finally:
         jvm.stop()

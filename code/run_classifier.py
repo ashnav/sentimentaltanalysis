@@ -26,7 +26,7 @@ sys.path.append(join(fileDir, "hybrid_classifier"))
 from train import softmax
 from postaggers import arktagger
 from utilities import *
-from features import features
+from feature_utils import *
 import numpy as np
 import regularization
 from TwitterHybridClassifier import TwitterHybridClassifier
@@ -64,11 +64,11 @@ def run_classifier(tweets, d):
     curDir = os.getcwd()
     
     #switch directory because all of the file paths are hardcoded in the hybrid_classifier project :(
-    os.chdir(join(fileDir, "hybrid_classifier"))
-    #run hybrid pipeline classifier
-    print "Running hybrid classifier"
-    tweet_texts = [tweet['MESSAGE'].strip() for tweet in tweets]
-    confidence_pipe = run_hybrid_classifier(tweet_texts)
+#    os.chdir(join(fileDir, "hybrid_classifier"))
+#    #run hybrid pipeline classifier
+#    print "Running hybrid classifier"
+#    tweet_texts = [tweet['MESSAGE'].strip() for tweet in tweets]
+#    confidence_pipe = run_hybrid_classifier(tweet_texts)
 
     #tokenize all messages
     tokens_test = tokenize(messages_test)
@@ -112,11 +112,15 @@ def run_classifier(tweets, d):
     os.chdir(curDir)
     
     #combine confidence scores with weights W1, W2, W3
+    #W1 = 0.34
+    #W2 = 0.58
+    #W3 = 0.08
     W1 = 0.34
-    W2 = 0.58
-    W3 = 0.08
+    W2 = 1-W1
+    print "weights {}, {}".format(W1, W2)
     
-    confidence = confidence_sp1*W1 + confidence_sp2*W2 + confidence_pipe*W3
+    #confidence = confidence_sp1*W1 + confidence_sp2*W2 + confidence_pipe*W3
+    confidence = confidence_sp1*W1 + confidence_sp2*W2
 
     #get final prediction
     prediction = [np.argmax(x)-1 for x in confidence]
@@ -132,7 +136,8 @@ def run_classifier(tweets, d):
             pol = "positive"
         results.append((tweets[i]['ID'], pol))
     print "Classification complete"
-    return (results, confidence_sp1, confidence_sp2, confidence_pipe)
+    #return (results, confidence_sp1, confidence_sp2, confidence_pipe)
+    return (results, confidence_sp1, confidence_sp2)
 
 """
 Builds the feature vectors for the manually created features. 
@@ -157,15 +162,21 @@ def build_feature_vector(messages_test, tokens_test):
 	
     #load lexicons
     negationList, slangDictionary, lexicons, mpqa_lexicons = loadLexiconsFromFile()
-	
-    #load clusters
-    clusters = loadClustersFromFile()
+    
+    #load features list
+    features_list = load_feature_list(join(fileDir, "resources/featureslist.txt"))
+    
+    clusters = []
+    #load word clusters
+    if 'word_clusters' in features_list:
+	clusters = loadClustersFromFile()
 		
     print "Resources loaded"
     
-    features_test = features.getFeatures(
+    features_test = getFeatures(
                                 messages_test, 
-                                tokens_test, 
+                                tokens_test,
+                                features_list,
                                 pos_tags_test, 
                                 slangDictionary, 
                                 lexicons, 
