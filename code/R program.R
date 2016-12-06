@@ -25,7 +25,7 @@
 #' 
 Author Preethi Hansaa
 Adapted from BenMarwick
-Made few changes to make it compatible to accepts twitter comma separated files
+Made few changes to make it compatible to accept twitter comma separated files
 #' 
 #' A full example, assuming you've sourced the 
 #' function from github already:
