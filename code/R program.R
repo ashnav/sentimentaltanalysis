@@ -23,7 +23,7 @@
 #' column you can set it like so (for example if col 2 has the labels):
 #' labels = 2
 #' 
-Author Preethi Hansaa
+Author Preethi Hansaa,Ashwini murthy
 Adapted from BenMarwick
 Made few changes to make it compatible to accept twitter comma separated files
 #' 
