@@ -1,3 +1,22 @@
+# 
+# As our project was based mostly on combining techniques with existing code, there was not a lot of code, so 
+# Stephanie Durand wrote or adapted all of the code for the project phase I and II.
+#
+# This code is based off of the file features.py from the aueb project folder.
+# We created this adaptation so that we could specify the features that we want 
+# to include from a file and only include the specified features in the
+# manually created feature vector for the sd1/sp1 classifiers of the 
+# weighted ensemble of SVMs. This is how we were able to reduce the number of 
+# features in the feature vector.
+#  
+#
+# Adapted from code written by:
+# Stavros Giorgis, Apostolos Rousas, John Pavlopoulos, 
+# Prodromos Malakasiotis and Ion Androutsopoulos
+#
+#
+# Adapted by: Stephanie Durand
+#
 import numpy as np
 from aueb.features.morphologicalFeatures import *
 from aueb.features.posBasedFeatures import *
@@ -6,7 +25,9 @@ from aueb.features.posBigramsFeatures import *
 from aueb.features.otherFeatures import *
 from aueb.features.clusterFeatures import *
 
-#return feautures of a list of messages as an array
+"""
+return feautures of a list of messages as an array
+"""
 def getFeatures(messages,tokens,features_list,pos,slangDictionary,lexicons,mpqa_lexicons,pos_bigrams,pos_trigrams,pos_bigrams_scores_objective,pos_bigrams_scores_subjective,pos_trigrams_scores_objective,pos_trigrams_scores_subjective,pos_tags_scores_objective,pos_tags_scores_subjective,mpqaScores,negationList,clusters,pos_bigrams_scores_neutral=None,pos_trigrams_scores_neutral=None,pos_tags_scores_neutral=None):
     #initialize empty list with features for all message
     features = []
@@ -26,8 +47,9 @@ def getFeatures(messages,tokens,features_list,pos,slangDictionary,lexicons,mpqa_
 
     #return result
     return features
-
-#calculate features for a message
+"""
+calculate features for a message
+"""
 def calculateFeatures(message,tokens,features_list,pos,slangDictionary,lexicons,mpqa_lexicons,pos_bigrams,pos_trigrams,pos_bigrams_scores_objective,pos_bigrams_scores_subjective,pos_trigrams_scores_objective,pos_trigrams_scores_subjective,pos_tags_scores_objective,pos_tags_scores_subjective,mpqaScores,negationList,clusters,pos_bigrams_scores_neutral,pos_trigrams_scores_neutral,pos_tags_scores_neutral):    
 
     f=[]
@@ -430,13 +452,14 @@ def calculateFeatures(message,tokens,features_list,pos,slangDictionary,lexicons,
         f+=tags
 
     return f
+
 """
 reads a file of features to use in training/classification
 inputs:
 f - name of the file to load
 
 outputs:
-list of the name of features to use for training/classification
+list of the names of features to use for training/classification
 """    
 def load_feature_list(f):
     features_list = []

@@ -52,11 +52,11 @@ def train(tweets, d):
     
     #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
     curDir = os.getcwd()
-#    os.chdir(join(fileDir, "hybrid_classifier"))
-#    
-#    #train the new ML classifier for the pipeline
-#    train_classifier3(tweets)
-#    print "Trained new hybrid classifier"
+    os.chdir(join(fileDir, "hybrid_classifier"))
+    
+    #train the new ML classifier for the pipeline
+    train_classifier3(tweets)
+    print "Trained new hybrid classifier"
     
     #switch back to current directory
     os.chdir(curDir)

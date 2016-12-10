@@ -1,3 +1,13 @@
+# 
+# This file is not used on our final classifier. This builds a 
+# classifier using the StringToWrodVector filter and SMO classifier in weka  via the 
+# python weka wrapper. The results we found were much worse than we had anticipated,
+# so we opted to not use this classifier within our weighted combination of 
+# classifiers.
+#
+#
+# Author: Stephanie Durand
+#
 from weka.core.dataset import *
 from weka.classifiers import Classifier
 from weka.filters import StringToWordVector
@@ -27,12 +37,6 @@ class StringWordVectorClassifier:
     def __init__(self, training):
         #build data in the format weka expects
         dataset = StringWordVectorClassifier.convertDictToInstances(training)
-        print dataset.num_instances
-        msg_attr = dataset.attribute(0)
-        print msg_attr.value(int(dataset.get_instance(0).get_value(0))) == training[0]['MESSAGE'].strip()
-        print msg_attr.value(int(dataset.get_instance(35).get_value(0))) == training[35]['MESSAGE'].strip()
-        print msg_attr.value(int(dataset.get_instance(523).get_value(0))) == training[523]['MESSAGE'].strip()
-        print msg_attr.value(int(dataset.get_instance(1634).get_value(0))) == training[1634]['MESSAGE'].strip()
         
         #build filter
         stemmer = Stemmer(classname='weka.core.stemmers.NullStemmer')
@@ -53,6 +57,20 @@ class StringWordVectorClassifier:
         self.cls = Classifier(classname="weka.classifiers.functions.SMO")
         self.cls.build_classifier(filtered)
         
+    """
+    Classifies the provided list of tweets with the pre-trained SMO classifier.
+    inputs: 
+    testing -  a list of tweet dictionaries
+          Each dictionary should be of the form:
+      {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>,
+         'MESSAGE': <tweet message>
+      }
+    
+    outputs:
+    a list containing only the predicted sentiment of each tweet
+    """    
     def classify(self, testing):
         print 'Performing classification'
         test_set = StringWordVectorClassifier.convertDictToInstances(testing)
@@ -62,7 +80,22 @@ class StringWordVectorClassifier:
             predNum = self.cls.classify_instance(inst)
             predictions.append(filtered_test.class_attribute.value(int(predNum)))
         return predictions
-        
+    
+    """
+    Converts from a python dictionary of tweets to the weka Instances data format 
+    for use within the weka filters and classifiers.
+    inputs:
+     a list of tweet dictionaries
+          Each dictionary should be of the form:
+      {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>,
+         'MESSAGE': <tweet message>
+      }
+      
+     outputs:
+     an Instances object containing all of the tweet data in the format used by weka
+    """
     @staticmethod    
     def convertDictToInstances(tweets):
         header_string = "@relation tweets_sentiment \n@attribute \'tweet\'\tstring\n@attribute \'sentiment\'\t{positive,neutral,negative}\n@data\n"
@@ -79,28 +112,12 @@ class StringWordVectorClassifier:
         data=loader.load_file(temp_file)
         data.class_is_last()
         os.remove(temp_file)
-        print data.num_instances
         return data
         
-        
-#        String[] options = splitOptions("-R first-last -W 1000 -prune-rate -1.0 -N 0 "
-#                +"-stemmer weka.core.stemmers.NullStemmer -stopwords-handler weka.core.stopwords.Null -M 1 "
-#                +"-tokenizer \"weka.core.tokenizers.WordTokenizer -delimiters "+
-#                "\\\" \\\\r\\\\n\\\\t.,;:\\\\\\'\\\\\\\"()?!\\\"\"");
-#        filter.setOptions(options);
-#        //System.out.println(Arrays.asList(filter.getOptions()));
-#        Instances instances = convertTweetDataToInstances(training);
-#        filter.setInputFormat(instances);
-#        classifier = new SMO();
-#        String[] classOptions = splitOptions("-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"");
-#        System.out.println(Arrays.asList(classOptions));
-#        classifier.setOptions(classOptions);
-#
-#        // Use filter.
-#        Instances filteredData = Filter.useFilter(instances, filter);
-#
-#        // Rebuild classifier.
-#        classifier.buildClassifier(filteredData);      
+"""
+Method used to test classifier. The data file that it uses is hard-coded in because it 
+is strictly for testing purposes.
+"""        
 if __name__ == "__main__":
     import weka.core.jvm as jvm
     import sys
@@ -110,13 +127,9 @@ if __name__ == "__main__":
     print len(tweets)
     from cross_validate import fold_data
     folds = fold_data(tweets, 10)
-    print len(folds)
-    print len(folds[0])
-    num_itr = 2
-    #num_itr = len(folds)
     try:
         jvm.start()
-        for foldNum in range(1,2):
+        for foldNum in range(0,len(folds)):
             print "Starting fold {}".format(foldNum)
             training = []
             test = []

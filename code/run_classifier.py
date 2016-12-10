@@ -1,6 +1,6 @@
 # 
 # As our project was based mostly on combining techniques with existing code, there was not a lot of code, so 
-# Stephanie Durand wrote or adapted all of the code for the project phase I.
+# Stephanie Durand wrote or adapted all of the code for the project phase I and II.
 #
 # This file is the main mechanism for running our combined classifier.
 #
@@ -64,11 +64,11 @@ def run_classifier(tweets, d):
     curDir = os.getcwd()
     
     #switch directory because all of the file paths are hardcoded in the hybrid_classifier project :(
-#    os.chdir(join(fileDir, "hybrid_classifier"))
-#    #run hybrid pipeline classifier
-#    print "Running hybrid classifier"
-#    tweet_texts = [tweet['MESSAGE'].strip() for tweet in tweets]
-#    confidence_pipe = run_hybrid_classifier(tweet_texts)
+    os.chdir(join(fileDir, "hybrid_classifier"))
+    #run hybrid pipeline classifier
+    print "Running hybrid classifier"
+    tweet_texts = [tweet['MESSAGE'].strip() for tweet in tweets]
+    confidence_pipe = run_hybrid_classifier(tweet_texts)
 
     #tokenize all messages
     tokens_test = tokenize(messages_test)
@@ -112,15 +112,11 @@ def run_classifier(tweets, d):
     os.chdir(curDir)
     
     #combine confidence scores with weights W1, W2, W3
-    #W1 = 0.34
-    #W2 = 0.58
-    #W3 = 0.08
-    W1 = 0.34
-    W2 = 1-W1
-    print "weights {}, {}".format(W1, W2)
+    W1 = 0.58
+    W2 = 0.34
+    W3 = 0.08
     
-    #confidence = confidence_sp1*W1 + confidence_sp2*W2 + confidence_pipe*W3
-    confidence = confidence_sp1*W1 + confidence_sp2*W2
+    confidence = confidence_sp1*W1 + confidence_sp2*W2 + confidence_pipe*W3
 
     #get final prediction
     prediction = [np.argmax(x)-1 for x in confidence]
@@ -136,8 +132,7 @@ def run_classifier(tweets, d):
             pol = "positive"
         results.append((tweets[i]['ID'], pol))
     print "Classification complete"
-    #return (results, confidence_sp1, confidence_sp2, confidence_pipe)
-    return (results, confidence_sp1, confidence_sp2)
+    return (results, confidence_sp1, confidence_sp2, confidence_pipe)
 
 """
 Builds the feature vectors for the manually created features. 

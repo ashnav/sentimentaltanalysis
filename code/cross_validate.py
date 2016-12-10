@@ -14,7 +14,7 @@ from train import train_classifier3
 from train_aueb import train as aueb_train
 from aueb.detect_sentiment import main as detect_sentiment
 import argparse
-from run_classifier import run_classifier
+from run_classifier_rules_pipe import run_classifier
 fileDir = os.path.dirname(__file__)
 """
 Creates the data folds to be used for cross-validation
@@ -45,26 +45,62 @@ def fold_data(data_list, numFolds):
         return folds
  
 """
-Trains and tests using the combined classifier
+Trains and tests using the new combined classifier
+
+inputs:
+training - a list of dictionaries for each message in the training set. 
+    The dictionary should be in the following format:
+    {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>,
+         'MESSAGE': <tweet message>
+     }
+test - a list of dictionaries for each message in the test set.
+The dictionary will likely be of the same format as the training set, but can be missing the sentiment entry.
+
+d - the number of dimensions to use for the Glove data
+
+outputs:
+a list of dictionaries for each message in the test set of the following format:
+    {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>
+    }
 """
-def run_combined_classifier(training, test, foldNum, d):
+def run_combined_classifier(training, test, d):
         #train the classifier
         train(training, d)
         print "Training complete."
         #run the classifier
         all_results = run_classifier(test, d)
         print "Classification complete"
-        results = all_results[0]
-        filename = "combined_results_fold" + str(foldNum) + ".out"
-        with open(filename, "w") as outfile:
-            for result in results:
-                outfile.write(result[0] + '\t' + result[1] + '\n')
-        print "Execution complete. Output file written as " + filename
+        return all_results[0]
+  
     
 """
 Trains and tests using the original weightedSVM classifier
+
+inputs:
+training - a list of dictionaries for each message in the training set. 
+    The dictionary should be in the following format:
+    {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>,
+         'MESSAGE': <tweet message>
+     }
+test - a list of dictionaries for each message in the test set.
+The dictionary will likely be of the same format as the training set, but can be missing the sentiment entry.
+
+d - the number of dimensions to use for the Glove data
+
+outputs:
+a list of dictionaries for each message in the test set of the following format:
+    {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>
+    }
 """
-def run_weightedSVM_classifier(training, test, foldNum, d):
+def run_weightedSVM_classifier(training, test, d):
     curDir = os.getcwd()
     aueb_train(training, d)
     print "Training complete"
@@ -79,16 +115,34 @@ def run_weightedSVM_classifier(training, test, foldNum, d):
     #run classifier
     results = detect_sentiment(message_tests)
     os.chdir(curDir)
-    #write results
-    with open(join(fileDir,"../data/aueb_results_fold" + str(foldNum)), "w") as results_out:
-       for tweet_id, polarity in results:
-          results_out.write(tweet_id +"\t" + polarity + "\n")
+    return_results = []
+    for tweet_id, polarity in results:
+      return_results.append({'ID': tweet_id, 'SENTIMENT': polarity})
+    return return_results
     
 """
 Trains and tests using the original pipeline classifier
+
+inputs:
+training - a list of dictionaries for each message in the training set. 
+    The dictionary should be in the following format:
+    {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>,
+         'MESSAGE': <tweet message>
+     }
+test - a list of dictionaries for each message in the test set.
+The dictionary will likely be of the same format as the training set, but can be missing the sentiment entry.
+
+outputs:
+a list of dictionaries for each message in the test set of the following format:
+    {
+         'ID': <id>,
+         'SENTIMENT': <sentiment>
+    }
 """
-def run_pipeline_classifier(training, test, foldNum):
-    print "in run pipeline"
+def run_pipeline_classifier(training, test):
+
     #train
     #switch directory because all of the file paths are hardcoded in the hybrid classifer project :(
     curDir = os.getcwd()
@@ -107,15 +161,17 @@ def run_pipeline_classifier(training, test, foldNum):
     
     #switch back to current directory
     os.chdir(curDir)
-    #write results
-    with open(join(fileDir,"../data/pipeline_results_fold" + str(foldNum)), "w") as results_out:
-       for i in range(0,len(predictions)):
-          results_out.write(test[i]['ID'] +"\t" + predictions[i][0] + "\n")
+    results = []
+    for i in range(0,len(predictions)):
+      results.append({'ID': test[i]['ID'], 'SENTIMENT': predictions[i][0]})
+    return results
     
     
 """    
 Parses the input file names (as arguments), reads all of them, splits the data into the correct ratio of 
-training to test data, trains using the training data and classifies the test data.
+training to test data, trains using the training data and classifies the test data using the specfied classifier.
+The classifier can either be the original weightedSVM classifier, the original pipeline classifier, or
+our new classifier that combines the two.
 """
 if __name__ == "__main__":
 
@@ -125,6 +181,7 @@ if __name__ == "__main__":
     parser.add_argument('--x', type=int, default=10, help="the number of folds to use in cross-fold validation")
     parser.add_argument('--d', type=int, choices=[25, 50, 100, 200], default=100, 
         help="the number of dimensions to use for the glove word vector representations.")
+    parser.add_argument('output_file', type=str, nargs=1, help="the name of the output file")
     parser.add_argument('files', type=str, nargs='+', help="the data files to use for cross-validation")
     args = parser.parse_args()
 
@@ -142,7 +199,7 @@ if __name__ == "__main__":
     print "Data files loaded"
 
     folds = fold_data(tweets, args.x)
-
+    results = []
     for foldNum in range(0,len(folds)):
         training = []
         test = []
@@ -151,11 +208,15 @@ if __name__ == "__main__":
                 test = folds[index]
             else:
                 training.extend(folds[index])
-        
+                
         if(args.classifier=='VCU'):
-            run_combined_classifier(training, test, foldNum ,args.d)
+            results.extend(run_combined_classifier(training, test, args.d))
         elif(args.classifier=='weightedSVM'):
-            run_weightedSVM_classifier(training, test, foldNum, args.d)
+            results.extend(run_weightedSVM_classifier(training, test, args.d))
         else:
-            run_pipeline_classifier(training, test, foldNum)
+            results.extend(run_pipeline_classifier(training, test))
+            
+    with open(args.output_file[0], "w") as outfile:    
+        for entry in results:
+            outfile.write('{}\t{}\n'.format(entry['ID'], entry['SENTIMENT']))
             
