@@ -1,15 +1,43 @@
-Our method for performing sentiment analysis is based on the combination of two existing systems. We use the individual performance of each of those systems as a baseline to compare against. For more information on each of these systems, please read the README file. 
+Phase 1:
+
+Our method for performing sentiment analysis is based on the combination of two existing systems. We use the individual performance of each of those systems as a baseline to compare against. For more information on each of these systems and how they were combined and/or altered, please read the README file. 
 
 Evaluation metric(s)
-We want to know the performance of the system. Classification accuracy is computed as the number of correct predictions over the number of instances which is not sufficient. So, a F-measure is used to reduce the system bias. We use F1 score to evaluate the system performance. In the equation, precision is the number of correct positive (negative/neutral) instances divided by the number of all positive (negative/neutral) instances. Recall is the number of correct positive(negative/neutral) instances divided by the number of positive (negative/neutral) instances that should have been returned. This measure considers both the correct precision and the recall. 
+We want to know the performance of the system. Classification accuracy is computed as the number of correct predictions over the number of instances which is not sufficient. So, a F-measure is used to reduce the system bias. We use F1 score to evaluate the system performance. In the equation, precision is the number of correct positive (negative/neutral) instances divided by the number of all positive (negative/neutral) instances. Recall is the number of correct positive(negative/neutral) instances divided by the number of positive (negative/neutral) instances that should have been returned. This measure considers both the correct precision and the recall.
+Our calculations for the F-score were all obtained from running the SemEval-provided scoring script found under scorers/scoreA.pl 
 
 Result
            Positive F1   |   Negative F1   |   Neutral F1   |   Overall F1
 WE SVMs      71.55       |      39.00      |     48.25      |     55.27
 NILC         72.34       |      43.06      |     38.95      |     57.70
-Our system   74.14       |      41.52      |     37.57      |     57.83
+Phase-I      74.14       |      41.52      |     37.57      |     57.83
 
-Our system combines both the systems together. We add NILC_USCP into the Weighted Ensemble of SVMs as a third method. In the chart, we compare the three system by precision, recall and F1 score. In the table, we have the F1 score of three systems.  Our max F1 is 57.8% with the weights 0.1, 0.75, and 0.15. We can observe a  slight overall improvement. However, our system has the worst performance over neutral instances. We concentrate on this problem and will try to fix this problem for the Project Phase 2.
+In the chart, we compare the three systems by precision, recall and F1 score. Our max F1 was 57.8% with the weights 0.1, 0.75, and 0.15. We can observe a slight overall improvement. However, our system has the worst performance over neutral instances. We concentrate on this problem and will try to fix this problem for the Project Phase 2.
+
+——————————————————————————————————————
+Phase 2:
+
+In phase 2, to improve the precision, we used more data for training and removed features from the sd1/sp1 classifier in our system. We used 10 fold cross validation and compare against the individual performance of each of pipeline, WESVMs and our preliminary system in phase 1 as a baseline.
+
+Evaluation metric(s)
+As we explained before, we use F1-score to evaluate the system performance.
+
+Result
+           Positive F1   |   Negative F1   |   Neutral F1   |   Overall F1
+WE SVMs      71.55       |      39.00      |     48.25      |     55.27
+NILC         72.34       |      43.06      |     38.95      |     57.70
+Phase-I      74.14       |      41.52      |     37.57      |     57.83
+Phase-II     67.89       |      51.60      |     57.83      |     59.74
+
+  Our Phase-II overall F1 score is 59.74, which is highest. Although the F1 score of positive message is lowest, we have a obvious improvement on negative and neutral messages. The performance of overall system also slightly improved.
+
+We can also use the original individual classifiers (WE SVMs and NILC) using 10-fold cross-validation and the same data as a baseline to compare against. When we do so, we observe the following results:
+Result
+           Positive F1   |   Negative F1   |   Neutral F1   |   Overall F1
+WE SVMs      67.11       |      51.02      |     59.91      |     59.07
+NILC         59.69       |      31.73      |     38.53      |     45.71
+Phase-II     67.89       |      51.60      |     57.83      |     59.74
+
+We note that our phase II classifier still performs the best overall (by a slight margin), even after we removed over 1000 features from the SD1/SD2 classifier. 
 
 Author: Xiaolu Cheng
-
