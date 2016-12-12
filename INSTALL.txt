@@ -14,7 +14,7 @@ and requires the installation of the following libraries for python2.7:
 
 In order to download these libraries, use the following commands:
 
-sudo apt-get install python-pip python-setuptools python-numpy python-scipy python-sklearn python-nltk
+sudo apt-get install python-dev python-pip python-setuptools python-numpy python-scipy python-sklearn python-nltk
 sudo pip install -U setuptools numpy scipy sklearn nltk
 
 python -c "import nltk; nltk.download('sentiwordnet')"

@@ -130,7 +130,7 @@ def run_classifier(tweets, d):
             pol = "neutral"
         else:
             pol = "positive"
-        results.append((tweets[i]['ID'], pol))
+        results.append({'ID': tweets[i]['ID'], 'SENTIMENT':pol})
     print "Classification complete"
     return (results, confidence_sp1, confidence_sp2, confidence_pipe)
 

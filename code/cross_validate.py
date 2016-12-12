@@ -14,7 +14,7 @@ from train import train_classifier3
 from train_aueb import train as aueb_train
 from aueb.detect_sentiment import main as detect_sentiment
 import argparse
-from run_classifier_rules_pipe import run_classifier
+from run_classifier import run_classifier
 fileDir = os.path.dirname(__file__)
 """
 Creates the data folds to be used for cross-validation
@@ -37,7 +37,7 @@ def fold_data(data_list, numFolds):
                 folds.append(fold)
             else:
                 if len(folds) == numFolds:
-                    folds[-1].append(data_list[index:])
+                    folds[-1].extend(data_list[index:])
                 else:
                     fold = data_list[index:]
                     folds.append(fold)
@@ -201,6 +201,7 @@ if __name__ == "__main__":
     folds = fold_data(tweets, args.x)
     results = []
     for foldNum in range(0,len(folds)):
+        print "Running fold " + str(foldNum)
         training = []
         test = []
         for index in range(0, len(folds)):
@@ -208,7 +209,6 @@ if __name__ == "__main__":
                 test = folds[index]
             else:
                 training.extend(folds[index])
-                
         if(args.classifier=='VCU'):
             results.extend(run_combined_classifier(training, test, args.d))
         elif(args.classifier=='weightedSVM'):
@@ -218,5 +218,5 @@ if __name__ == "__main__":
             
     with open(args.output_file[0], "w") as outfile:    
         for entry in results:
-            outfile.write('{}\t{}\n'.format(entry['ID'], entry['SENTIMENT']))
+            outfile.write('{idNum}\t{cl}\n'.format(idNum=entry['ID'], cl=entry['SENTIMENT']))
             

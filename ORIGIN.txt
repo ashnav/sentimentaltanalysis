@@ -1,3 +1,6 @@
 The folders code/aueb, code/hybrid_classifier, scorers all contain 3rd party code. There are additional ORIGIN files in each of these folders to provide additional information.
 
+Our code is available on github at:
+https://github.com/ashnav/sentimentaltanalysis/
+
 author: Stephanie Durand
